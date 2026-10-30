@@ -9,4 +9,10 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Credential routes
+    Route::get('/credentials', [AuthController::class,'index']);
+    Route::post('/credentials', [AuthController::class,'addCredentials']);
+    Route::put('/credentials', [AuthController::class,'updateCredentials']);
+    Route::delete('/credentials', [AuthController::class,'deleteCredentials']);
 });
