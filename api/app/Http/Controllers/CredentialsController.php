@@ -43,14 +43,13 @@ class CredentialsController extends Controller
     public function updateCredentials(Request $request) {
         // Stores and validates the data from the request
         $data = $request->validate([
-            'user_id' => 'required|integer',
             'email' => 'required|email|unique:credientials',
             'times_breached' => 'required|integer',
             'breach_details' => 'string',
         ]);
 
         // Updates the credentials
-        $credential = Credential::where('user_id','=', $data['user_id']);
+        $credential = Credential::where('user_id','=', $request->user()->id);
 
         $credential->update($data);
 
@@ -60,4 +59,17 @@ class CredentialsController extends Controller
         ],204);
     }
 
+    // Credential to delete the credential
+    public function deleteCredentials(Request $request) {
+        // Gets the credential
+        $credential = Credential::where('user_id','=', $request->user()->id)->first();
+
+        // Deletes the credential
+        $credential->delete();
+
+        // Sends back the response
+        return response()->json([
+            'credential'=> $credential
+        ], 204);
+    }
 }
