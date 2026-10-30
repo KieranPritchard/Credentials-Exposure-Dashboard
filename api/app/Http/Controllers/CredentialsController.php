@@ -15,22 +15,22 @@ class CredentialsController extends Controller
             'user_id' => 'required|integer'
         ]);
 
-        // Stores the credentails
-        $credentials = Credential::where('user_id','=', $data['user_id'])->toArray();
+        // Stores the credentials (Fixed: added ->get() to execute the query)
+        $credentials = Credential::where('user_id','=', $data['user_id'])->get();
 
         // Send back the credentials
         return response()->json($credentials);
     }
 
-    // Method to add a new crediental
+    // Method to add a new credential
     public function addCredentials(Request $request) {
         // Stores the data from the request
         $data = $request->validate([
-            'email' => 'required|email|unique:credientials',
+            'email' => 'required|email|unique:credentials,email', // Fixed table name typo
             'user_id' => 'required|integer'
         ]);
 
-        // Creates a new crediential
+        // Creates a new credential
         $credential = Credential::create($data);
 
         // Sends back a response with 201 'created' status
@@ -43,33 +43,42 @@ class CredentialsController extends Controller
     public function updateCredentials(Request $request) {
         // Stores and validates the data from the request
         $data = $request->validate([
-            'email' => 'required|email|unique:credientials',
+            'id' => 'required|integer|exists:credentials,id', // Added ID validation
+            'email' => 'required|email|unique:credentials,email,' . $request->id,
             'times_breached' => 'required|integer',
-            'breach_details' => 'string',
+            'breach_details' => 'nullable|string',
         ]);
 
-        // Updates the credentials
-        $credential = Credential::where('user_id','=', $request->user()->id);
+        // Updates the credentials (Fixed: targets specific credential and user)
+        $credential = Credential::where('id', $data['id'])
+            ->where('user_id','=', $request->user()->id)
+            ->firstOrFail();
 
         $credential->update($data);
 
-        // Returns the updated credential
+        // Returns the updated credential (Note: changed to 200 OK because 204 cannot return a body)
         return response()->json([
             'credential'=> $credential
-        ],204);
+        ], 200);
     }
 
-    // Credential to delete the credential
+    // Method to delete the credential
     public function deleteCredentials(Request $request) {
-        // Gets the credential
-        $credential = Credential::where('user_id','=', $request->user()->id)->first();
+        $data = $request->validate([
+            'id' => 'required|integer|exists:credentials,id',
+        ]);
+
+        // Gets the credential (Fixed: targets specific credential and user)
+        $credential = Credential::where('id', $data['id'])
+            ->where('user_id','=', $request->user()->id)
+            ->firstOrFail();
 
         // Deletes the credential
         $credential->delete();
 
-        // Sends back the response
+        // Sends back the response (Note: changed to 200 OK because 204 cannot return a body)
         return response()->json([
             'credential'=> $credential
-        ], 204);
+        ], 200);
     }
 }
