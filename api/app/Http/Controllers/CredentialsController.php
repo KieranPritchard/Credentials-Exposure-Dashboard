@@ -38,4 +38,26 @@ class CredentialsController extends Controller
             'credential' => $credential,
         ], 201);
     }
+
+    // Method to edit credential
+    public function updateCredentials(Request $request) {
+        // Stores and validates the data from the request
+        $data = $request->validate([
+            'user_id' => 'required|integer',
+            'email' => 'required|email|unique:credientials',
+            'times_breached' => 'required|integer',
+            'breach_details' => 'string',
+        ]);
+
+        // Updates the credentials
+        $credential = Credential::where('user_id','=', $data['user_id']);
+
+        $credential->update($data);
+
+        // Returns the updated credential
+        return response()->json([
+            'credential'=> $credential
+        ],204);
+    }
+
 }
