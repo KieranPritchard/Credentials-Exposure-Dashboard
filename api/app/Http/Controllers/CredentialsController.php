@@ -7,6 +7,21 @@ use Illuminate\Http\Request;
 
 class CredentialsController extends Controller
 {
+    // Method to fetch all of the credentials
+    public function index(Request $request)
+    {
+        // Stores the data from the request
+        $data = $request->validate([
+            'user_id' => 'required|integer'
+        ]);
+
+        // Stores the credentails
+        $credentials = Credential::where('user_id','=', $data['user_id'])->toArray();
+
+        // Send back the credentials
+        return response()->json($credentials);
+    }
+
     // Method to add a new crediental
     public function addCredentials(Request $request) {
         // Stores the data from the request
