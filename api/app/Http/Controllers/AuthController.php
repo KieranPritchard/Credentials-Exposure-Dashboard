@@ -51,4 +51,18 @@ class AuthController extends Controller
             'token' => $user->createToken('web')->plainTextToken,
         ]);
     }
+
+    // Method to get user data
+    public function me(Request $request)
+    {
+        return $request->user();
+    }
+
+    // Method to logout the user
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->noContent();
+    }
 }
