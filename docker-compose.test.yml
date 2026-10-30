@@ -16,7 +16,7 @@ services:
   test:
     build:
       context: .
-      target: test
+      target: /api/Dockerfile
     depends_on:
       postgres:
         condition: service_healthy
