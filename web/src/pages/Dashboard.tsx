@@ -3,13 +3,14 @@ import NavigationBar from "../components/ui/NavigationBar"
 import { api } from "../lib/api"
 import { useNavigate, type NavigateFunction } from "react-router-dom"
 import MetricCard from "../components/ui/dashboard/MetricCard"
+import type { Credential } from "../types/Credential"
 
 export default function Dashboard() {
     // Stores the status of whether the dashboard has loaded or not
     const [loading, setLoading] = useState(true)
 
     // Stores the data
-    const [data, setData] = useState([])
+    const [data, setData] = useState<Credential[]>([])
 
     // Brings in a navigation method
     const navigate:NavigateFunction = useNavigate();
@@ -21,8 +22,8 @@ export default function Dashboard() {
 
     // Handler function to generate the total times breached
     const totalTimesBreached = () => {
-        return data.reduce((total: number, cred: any) => {
-            return total + (cred.times_breached ?? 0)
+        return data.reduce<number>((total, cred) => {
+            return total + (cred.timesBreached ?? 0)
         }, 0)
     }
     
