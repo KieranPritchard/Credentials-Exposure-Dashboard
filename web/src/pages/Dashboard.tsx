@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import NavigationBar from "../components/ui/NavigationBar"
 import { api } from "../lib/api"
 import { useNavigate, type NavigateFunction } from "react-router-dom"
+import MetricCard from "../components/ui/dashboard/MetricCard"
 
 export default function Dashboard() {
     // Stores the status of whether the dashboard has loaded or not
@@ -12,6 +13,18 @@ export default function Dashboard() {
 
     // Brings in a navigation method
     const navigate:NavigateFunction = useNavigate();
+
+    // Handler function to generate the total credentials card data
+    const totalCredentials = () => {
+        return data.length
+    }
+
+    // Handler function to generate the total times breached
+    const totalTimesBreached = () => {
+        return data.reduce((total: number, cred: any) => {
+            return total + (cred.times_breached ?? 0)
+        }, 0)
+    }
     
     // Fetches the data from the laravel backend
     useEffect(() => {
@@ -72,7 +85,8 @@ export default function Dashboard() {
                 {!loading && (
                     <div className="w-full max-w-6xl">
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-5">
-                            
+                            <MetricCard title="Total Number of Credentials" metric={totalCredentials()}/>
+                            <MetricCard title="Total Number of Breaches" metric={totalTimesBreached()}/>
                         </div>
                     </div>
                 )}

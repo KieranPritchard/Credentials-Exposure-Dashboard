@@ -1,7 +1,7 @@
 // Stores the interface for the metric card props
 interface MetricCardProps {
     title: string,
-    metric: string|number
+    metric: number
 }
 
 export default function MetricCard({title, metric}:MetricCardProps) {
