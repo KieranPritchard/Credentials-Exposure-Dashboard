@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import NavigationBar from "../components/ui/NavigationBar"
 
 export default function Dashboard() {
     // Stores the status of whether the dashboard has loaded or not
@@ -12,9 +13,12 @@ export default function Dashboard() {
         setData([])
         setLoading(false)
     }, [data])
-    
+
     return (
         <main className="min-h-screen flex overflow-x-clip">
+            
+            <NavigationBar />
+
             <div className="flex-1 flex flex-col items-center bg-slate-50 text-slate-800 px-4 py-12">
                 {/* Displays a spinner when loading */}
                 {loading && (
