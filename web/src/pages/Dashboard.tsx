@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 import NavigationBar from "../components/ui/NavigationBar"
+import { api } from "../lib/api"
+import { useNavigate, type NavigateFunction } from "react-router-dom"
 
 export default function Dashboard() {
     // Stores the status of whether the dashboard has loaded or not
@@ -7,12 +9,47 @@ export default function Dashboard() {
 
     // Stores the data
     const [data, setData] = useState([])
+
+    // Brings in a navigation method
+    const navigate:NavigateFunction = useNavigate();
     
     // Fetches the data from the laravel backend
     useEffect(() => {
-        setData([])
-        setLoading(false)
-    }, [data])
+        let isMounted:boolean = true
+
+        const fetchData = async () => {
+            try{
+                // Gets the response from the api
+                const response = await api.get("/credentials")
+
+                // Checks if the response was ok
+                if (response.status < 200 || response.status >= 300) {
+                    navigate("/login")
+                    return
+                }
+
+                // Checks if the page is mounted
+                if (isMounted) {
+                    // Stores the credentials data
+                    const credentialData = response.data
+
+                    // Sets the credentials recipe
+                    setData(credentialData)
+                }
+            } catch (error) {
+                // Logs the error to the console
+                console.log(error);
+                // Redirects the user to the login page
+                navigate("/login");
+            }
+        }
+
+        fetchData().then(() => {})
+        
+        return ():void => {
+            isMounted = false
+        }
+    }, [navigate])
 
     return (
         <main className="min-h-screen flex overflow-x-clip">
