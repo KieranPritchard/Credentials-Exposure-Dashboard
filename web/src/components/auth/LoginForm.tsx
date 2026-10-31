@@ -1,0 +1,88 @@
+import {Link, type NavigateFunction, useNavigate} from "react-router-dom";
+import { useForm } from "../../context/FormContext";
+import FormField from "../forms/FormField";
+import axios, {type AxiosResponse} from "axios"
+import React from "react";
+import { api } from "../../lib/api";
+
+export default function LoginForm():React.JSX.Element {
+    // Brings in the validation function from the context
+    const { validateAll } = useForm();
+    const navigate:NavigateFunction = useNavigate();
+
+    // Handler function for submitting the form
+    const onSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Checks if the data is valid
+        const { valid, data } = validateAll();
+        if (valid) {
+            try {
+                // Sends a post request with the login data
+                const response:AxiosResponse = await api.post('/login', data, {
+                    withCredentials: true
+                });
+                // Logs the login as successful
+                console.log('Login successful:', response.data);
+
+                // Navigates to recipes
+                navigate("/dashboard");
+            } catch (error) {
+                // Checks and displays the correct errors
+                if (axios.isAxiosError(error)) {
+                    console.error('Login failed:', error.response?.data?.message ?? error.message);
+                } else {
+                    console.error('Unexpected error:', error);
+                }
+            }
+        }
+    };
+
+    return (
+        <form onSubmit={onSubmit} className="space-y-4">
+            {/* Header showing what the page is about */}
+            <div className="mb-6">
+                <h3 className="font-bold text-2xl text-slate-900 tracking-tight">Sign In</h3>
+                <p className="text-sm text-slate-500 mt-1">
+                    Enter your credentials to access your account.
+                </p>
+            </div>
+
+            {/* Form details */}
+            <div className="space-y-3">
+                <FormField name="email" label="Email Address" type="email" />
+                
+                <div>
+                    <FormField name="password" label="Password" type="password" />
+                    <div className="flex justify-end -mt-2">
+                        <Link
+                            to="/forgot-password" 
+                            className="text-xs font-semibold text-blue-600 hover:text-blue-700 hover:underline transition-colors"
+                        >
+                            Forgot password?
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
+            {/* Button to allow for the user to submit the data */}
+            <button 
+                type="submit" 
+                className="w-full mt-2 bg-blue-600 hover:bg-emerald-700 active:bg-blue-800 text-white font-medium py-2.5 px-4 rounded-lg shadow-sm transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500/50 cursor-pointer"
+            >
+                Login
+            </button>
+
+            {/* Allows the user to go and create an account */}
+            <p className="text-center text-sm text-slate-600 pt-3 border-t border-slate-100">
+                Don't have an account?{" "}
+                <Link 
+                    to="/signup" 
+                    className="font-semibold text-blue-600 hover:text-blue-700 hover:underline transition-colors"
+                >
+                    Create account
+                </Link>
+            </p>
+        </form>
+    );
+}
