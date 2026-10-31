@@ -15,7 +15,7 @@ const signUpSchema = z.object({
     path: ["confirmPassword"]
 })
 
-export default function SignUp():React.JSX.Element {
+export default function Register():React.JSX.Element {
     return (
         <main className="min-h-screen flex flex-col justify-center items-center bg-slate-50 px-4 py-12">
             <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-sm border border-slate-200/80">
