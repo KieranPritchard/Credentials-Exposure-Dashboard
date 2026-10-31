@@ -72,7 +72,7 @@ export default function Dashboard() {
                 {!loading && (
                     <div className="w-full max-w-6xl">
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-5">
-
+                            
                         </div>
                     </div>
                 )}
