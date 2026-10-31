@@ -35,6 +35,7 @@ export default function Dashboard() {
 
                     // Sets the credentials recipe
                     setData(credentialData)
+                    setLoading(false)
                 }
             } catch (error) {
                 // Logs the error to the console
