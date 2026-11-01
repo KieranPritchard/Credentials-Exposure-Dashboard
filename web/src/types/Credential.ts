@@ -6,5 +6,5 @@ export type Credential = {
     breachDetails: object
     lastChecked: string
     createdAt: string
-    UpdatedAt: string
+    updatedAt: string
 }
