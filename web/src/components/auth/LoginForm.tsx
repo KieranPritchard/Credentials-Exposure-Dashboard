@@ -5,9 +5,11 @@ import axios from "axios"
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
 
+type LoginData = { email: string; password: string };
+
 export default function LoginForm():React.JSX.Element {
     // Brings in the validation function from the context
-    const { validateAll } = useForm();
+    const { validateAll } = useForm<LoginData>();
     const { login } = useAuth();
     const navigate:NavigateFunction = useNavigate();
 
