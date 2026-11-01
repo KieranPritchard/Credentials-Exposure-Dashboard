@@ -2,11 +2,44 @@ import { Edit3Icon, Trash } from "lucide-react";
 import type { Credential } from "../../../types/Credential";
 import { useState } from "react";
 import { Modal } from "../Modal";
+import { api } from "../../../lib/api";
+import type { AxiosResponse } from "axios";
+import axios from "axios";
 
 export default function CredentialTableRow({ credential }: { credential: Credential }): React.JSX.Element {
     // State for the two modals
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+    // Handler for deleting a credential
+    const handleDelete:()=>void = async ():Promise<void> => {
+        try{
+            // Sends a delete request to axios
+            const response:AxiosResponse = await api.delete('/credentials', {
+                data: {
+                    id: credential.id
+                },
+                withCredentials: true
+            })
+
+            // Checks for the correct status code
+            if (response.status !== 200) {
+                throw new Error(`Failed to delete credential. Status code: ${response.status}`);
+            }
+
+            // Closes the modal
+            setIsDeleteModalOpen(false)
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                console.error('Delete recipe failed:', error.response?.data?.message ?? error.message);
+            } else {
+                console.error('Unexpected error:', error);
+            }
+
+            // Closes the modal
+            setIsDeleteModalOpen(false)
+        }
+    }
 
     return (
         <>
