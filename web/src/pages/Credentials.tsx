@@ -3,6 +3,7 @@ import { useNavigate, type NavigateFunction } from "react-router-dom"
 import type { Credential } from "../types/Credential"
 import { api } from "../lib/api"
 import NavigationBar from "../components/ui/NavigationBar"
+import CredentialTableRow from "../components/ui/credentials/CredentialTableRow"
 
 export default function Credentials() {
     // Stores the status of the loading data
@@ -85,16 +86,7 @@ export default function Credentials() {
                                 </thead>
                                 <tbody className="divide-y divide-blue-100 text-blue-800">
                                     {!loading && credentials.map((credential: Credential) => (
-                                        <tr key={credential.id}>
-                                            <td className="px-6 py-4">{credential.email}</td>
-                                            <td className="px-6 py-4">{credential.timesBreached}</td>
-                                            <td className="px-6 py-4">{JSON.stringify(credential.breachDetails)}</td>
-                                            <td className="px-6 py-4">{credential.createdAt}</td>
-                                            <td className="px-6 py-4">{credential.updatedAt}</td>
-                                            <td className="px-6 py-4">
-                                                <button className="text-blue-600 hover:text-blue-800">View Details</button>
-                                            </td>
-                                        </tr>
+                                        <CredentialTableRow key={credential.id} credential={credential} />
                                     ))}
                                 </tbody>
                             </table>
