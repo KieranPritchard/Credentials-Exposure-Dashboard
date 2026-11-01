@@ -20,8 +20,16 @@ export default function RegisterForm() {
         // Checks if the data is valid
         if (valid) {
             try {
+                // Map frontend field names to what Laravel expects
+                const payload = {
+                    name: data.displayName,
+                    email: data.email,
+                    password: data.password,
+                    password_confirmation: data.confirmPassword,
+                };
+
                 // Sends the new user data for adding to the users
-                const response = await api.post('/register', data, {
+                const response = await api.post('/register', payload, {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
                 });

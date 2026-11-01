@@ -25,7 +25,10 @@ export default function LoginForm():React.JSX.Element {
                 // Logs the login as successful
                 console.log('Login successful:', response.data);
 
-                // Navigates to recipes
+                // Store the token so AuthContext can restore the session
+                localStorage.setItem('token', response.data.token);
+
+                // Navigates to the dashboard
                 navigate("/dashboard");
             } catch (error) {
                 // Checks and displays the correct errors
@@ -68,7 +71,7 @@ export default function LoginForm():React.JSX.Element {
             {/* Button to allow for the user to submit the data */}
             <button 
                 type="submit" 
-                className="w-full mt-2 bg-blue-600 hover:bg-emerald-700 active:bg-blue-800 text-white font-medium py-2.5 px-4 rounded-lg shadow-sm transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500/50 cursor-pointer"
+                className="w-full mt-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium py-2.5 px-4 rounded-lg shadow-sm transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500/50 cursor-pointer"
             >
                 Login
             </button>
@@ -77,7 +80,7 @@ export default function LoginForm():React.JSX.Element {
             <p className="text-center text-sm text-slate-600 pt-3 border-t border-slate-100">
                 Don't have an account?{" "}
                 <Link 
-                    to="/signup" 
+                    to="/register" 
                     className="font-semibold text-blue-600 hover:text-blue-700 hover:underline transition-colors"
                 >
                     Create account
