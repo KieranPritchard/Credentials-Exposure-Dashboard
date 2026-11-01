@@ -51,7 +51,24 @@ export default function CredentialTableRow({ credential }: { credential: Credent
                 onClose={() => setIsDeleteModalOpen(false)}
                 title="Delete Credential"
             >
-                <p>Are you sure you want to delete this credential?</p>
+                <p className="my-2">
+                    Are you sure you want to delete this credential?
+                </p>
+
+                <div className="flex justify-between gap-2 pt-3 border-t border-slate-100">
+                    <button
+                        onClick={() => setIsDeleteModalOpen(false)}
+                        className="w-full p-2 border border-slate-500 text-slate-600 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleDelete}
+                        className="w-full p-2 border border-rose-600 text-rose-900 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                    >
+                        Delete
+                    </button>
+                </div>
             </Modal>
         </>
     )
