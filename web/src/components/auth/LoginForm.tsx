@@ -1,4 +1,4 @@
-import {Link, type NavigateFunction, useNavigate} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useForm } from "../../context/FormContext";
 import FormField from "../forms/FormField";
 import axios from "axios"
@@ -11,7 +11,6 @@ export default function LoginForm():React.JSX.Element {
     // Brings in the validation function from the context
     const { validateAll } = useForm<LoginData>();
     const { login } = useAuth();
-    const navigate:NavigateFunction = useNavigate();
 
     // Handler function for submitting the form
     const onSubmit = async (e: React.FormEvent) => {
@@ -21,12 +20,9 @@ export default function LoginForm():React.JSX.Element {
         const { valid, data } = validateAll();
         if (valid) {
             try {
-                // Use AuthContext login() — stores token AND sets user state
-                // so Protected route allows navigation through
+                // Use AuthContext login() — stores token AND sets user state.
+                // Login.tsx watches user state and redirects reactively.
                 await login(data.email, data.password);
-
-                // Navigates to the dashboard
-                navigate("/dashboard");
             } catch (error) {
                 // Checks and displays the correct errors
                 if (axios.isAxiosError(error)) {
