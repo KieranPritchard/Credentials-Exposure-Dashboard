@@ -1,13 +1,14 @@
 import {Link, type NavigateFunction, useNavigate} from "react-router-dom";
 import { useForm } from "../../context/FormContext";
 import FormField from "../forms/FormField";
-import axios, {type AxiosResponse} from "axios"
+import axios from "axios"
 import React from "react";
-import { api } from "../../lib/api";
+import { useAuth } from "../../context/AuthContext";
 
 export default function LoginForm():React.JSX.Element {
     // Brings in the validation function from the context
     const { validateAll } = useForm();
+    const { login } = useAuth();
     const navigate:NavigateFunction = useNavigate();
 
     // Handler function for submitting the form
@@ -18,15 +19,9 @@ export default function LoginForm():React.JSX.Element {
         const { valid, data } = validateAll();
         if (valid) {
             try {
-                // Sends a post request with the login data
-                const response:AxiosResponse = await api.post('/login', data, {
-                    withCredentials: true
-                });
-                // Logs the login as successful
-                console.log('Login successful:', response.data);
-
-                // Store the token so AuthContext can restore the session
-                localStorage.setItem('token', response.data.token);
+                // Use AuthContext login() — stores token AND sets user state
+                // so Protected route allows navigation through
+                await login(data.email, data.password);
 
                 // Navigates to the dashboard
                 navigate("/dashboard");
