@@ -4,10 +4,11 @@ import FormField from "../forms/FormField";
 import { api } from "../../lib/api";
 import type React from "react";
 import axios from "axios";
+import type { RegisterData } from "../../types/RegisterData";
 
 export default function RegisterForm() {
     // Brings in the form functions
-    const {validateAll} = useForm()
+    const {validateAll} = useForm<RegisterData>()
     const navigate = useNavigate()
 
     // Handler function for submitting the form

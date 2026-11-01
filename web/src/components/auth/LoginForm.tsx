@@ -4,8 +4,7 @@ import FormField from "../forms/FormField";
 import axios from "axios"
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
-
-type LoginData = { email: string; password: string };
+import type { LoginData } from "../../types/LoginData";
 
 export default function LoginForm():React.JSX.Element {
     // Brings in the validation function from the context

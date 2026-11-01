@@ -5,10 +5,11 @@ import axios from "axios";
 import React, { useState } from "react";
 import { api } from "../../lib/api";
 import { CheckCircle, CircleX } from "lucide-react";
+import type { ForgotPasswordData } from "../../types/ForgotPasswordData";
 
 export default function ForgotPasswordForm() {
     // Brings in the validation function from the context
-    const { validateAll } = useForm();
+    const { validateAll } = useForm<ForgotPasswordData>();
     const navigate = useNavigate();
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
