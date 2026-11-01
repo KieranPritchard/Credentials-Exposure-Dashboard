@@ -36,7 +36,7 @@ export default function NavigationBar():React.JSX.Element {
 
     return (
         <aside
-            className={`relative h-screen bg-emerald-950 text-blue-100 transition-all duration-300 ease-in-out flex flex-col justify-between p-4 ${
+            className={`relative h-screen bg-blue-950 text-blue-100 transition-all duration-300 ease-in-out flex flex-col justify-between p-4 ${
                 isCollapsed ? 'w-20' : 'w-64'
             }`}
         >
