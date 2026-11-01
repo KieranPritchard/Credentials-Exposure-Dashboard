@@ -11,7 +11,7 @@ interface NavItem {
 // Custom hook to manage dynamic navigation items
 export const useNavItems:() => NavItem[] = (): NavItem[] => {
     return [
-        { label: 'Home', path: '/recipes', icon: Home },
-        { label: 'Shopping List', path: '/list', icon: List },
+        { label: 'Home', path: '/', icon: Home },
+        { label: 'Credentials', path: '/credentials', icon: List },
     ];
 };
