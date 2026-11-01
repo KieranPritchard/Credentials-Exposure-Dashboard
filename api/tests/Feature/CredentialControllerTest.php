@@ -17,7 +17,7 @@ class CredentialControllerTest extends TestCase
         $user = User::factory()->create();
         Credential::factory()->count(3)->create(['user_id' => $user->id]);
 
-        $response = $this->getJson('/credentials?user_id=' . $user->id);
+        $response = $this->getJson('/credentials?user_id='.$user->id);
 
         $response->assertStatus(200)
             ->assertJsonCount(3);

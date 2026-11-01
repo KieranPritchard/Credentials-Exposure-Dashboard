@@ -28,7 +28,9 @@ RUN composer install --no-interaction --prefer-dist --no-scripts
 COPY . .
 
 # Run your test suite (this will cause the build/container execution to fail if tests fail)
-RUN php artisan test
+RUN touch .env && php artisan test
+
+CMD ["php", "artisan", "test"]
 
 # 3. Final runtime image
 FROM php:8.4-cli-alpine AS production
@@ -44,12 +46,11 @@ WORKDIR /var/www/html
 
 COPY . .
 COPY --from=vendor /app/vendor ./vendor
-# NEW: compiled CSS/JS that @vite reads from public/build
-COPY --from=assets /app/public/build ./public/build
 
 # --no-scripts skipped package discovery, so do it here.
 # Folders are listed out because Alpine's sh has no brace expansion.
-RUN php artisan package:discover --ansi \
+RUN rm -f bootstrap/cache/*.php \
+    && php artisan package:discover --ansi \
     && mkdir -p storage/framework/cache storage/framework/sessions \
                 storage/framework/views storage/logs bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache

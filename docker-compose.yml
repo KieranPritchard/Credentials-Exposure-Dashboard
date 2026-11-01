@@ -1,9 +1,11 @@
 x-laravel: &laravel
   build:
-    context: .
-    dockerfile: api/Dockerfile
+    context: ./api
+    dockerfile: Dockerfile
     target: production
-  env_file: .env
+  env_file:
+    - path: .env
+      required: false
   environment:
     APP_ENV: production
     APP_DEBUG: "false"
@@ -25,7 +27,7 @@ services:
   # ==========================================
   # 1. Laravel Backend Service (API)
   # ==========================================
-  app:
+  api:
     <<: *laravel
     container_name: app_backend
     restart: unless-stopped
@@ -70,16 +72,17 @@ services:
   # ==========================================
   test:
     build:
-      context: .
-      dockerfile: api/Dockerfile
+      context: ./api
+      dockerfile: Dockerfile
       target: test
     profiles:
       - test
     environment:
+      APP_KEY: base64:sM+syEEtgHbhgEKIf/w7uXmuBo8ysD8by6OwnWFGQOA=
       DB_CONNECTION: pgsql
       DB_HOST: db
       DB_PORT: 5432
-      DB_DATABASE: credentials_dashboard_test
+      DB_DATABASE: credentials_dashboard
       DB_USERNAME: user
       DB_PASSWORD_FILE: /run/secrets/db-password
     secrets:
@@ -92,14 +95,16 @@ services:
   # ==========================================
   # 5. React Frontend Service
   # ==========================================
-  frontend:
+  web:
     build:
-      context: .
-      dockerfile: web/Dockerfile
+      context: ./web
+      dockerfile: Dockerfile
     container_name: app_frontend
     restart: unless-stopped
     ports:
       - "80:80"
+    depends_on:
+      - api
 
 volumes:
   db-data:

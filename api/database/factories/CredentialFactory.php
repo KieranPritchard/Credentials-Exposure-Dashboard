@@ -16,7 +16,7 @@ class CredentialFactory extends Factory
             'user_id' => User::factory(),
             'email' => $this->faker->unique()->safeEmail(),
             'times_breached' => $this->faker->numberBetween(0, 3),
-            'breach_details' => $this->faker->sentence(),
+            'breach_details' => ['description' => $this->faker->sentence()],
         ];
     }
 }

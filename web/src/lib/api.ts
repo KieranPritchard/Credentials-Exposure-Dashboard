@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // Exports an api object
 export const api = axios.create({
-    baseURL: import.meta.env.BASE_URL,
+    baseURL: import.meta.env.VITE_API_URL || import.meta.env.BASE_URL || "",
     headers: { Accept: "application/json" },
 })
 
