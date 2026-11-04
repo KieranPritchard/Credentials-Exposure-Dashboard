@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
+import Credentials from "./pages/Credentials";
 
 function Protected({ children }: { children: JSX.Element }) {
     const { user, loading } = useAuth();
@@ -20,7 +21,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<Protected><Dashboard /></Protected>} />
-          <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
+          <Route path="/credentials" element={<Protected><Credentials /></Protected>} />
           <Route path="/forgot-password" element={<Protected><ForgotPassword /></Protected>} />
         </Routes>
       </BrowserRouter>

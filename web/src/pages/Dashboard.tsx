@@ -98,6 +98,7 @@ export default function Dashboard() {
                 {/* Displays the main page when the spinner is not there */}
                 {!loading && (
                     <div className="w-full max-w-6xl">
+                        <h1 className="text-2xl font-semibold mb-6">Dashboard</h1>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
                             <MetricCard title="Total Number of Credentials" metric={totalCredentials()} />
                             <MetricCard title="Total Number of Breaches" metric={totalTimesBreached()} />

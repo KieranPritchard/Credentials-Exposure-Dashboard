@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 $registerRoutes = function () {
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:10,1');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('throttle:10,1');
 
     Route::get('/credentials', [CredentialsController::class, 'index']);
     Route::post('/credentials', [CredentialsController::class, 'addCredentials']);

@@ -5,16 +5,9 @@ import { Modal } from "../Modal";
 import { api } from "../../../lib/api";
 import type { AxiosResponse } from "axios";
 import axios from "axios";
-import { z } from "zod";
 import { FormProvider, useForm } from "../../../context/FormContext";
 import FormField from "../../forms/FormField";
-
-// Defines the schema for credential
-const credentialSchema = z.object({
-    email: z.string(),
-    timesBreached: z.number().int().nonnegative(),
-    breachDetails: z.string()
-});
+import { credentialSchema } from "../../../schema/credential.schema";
 
 export default function CredentialTableRow({ credential }: { credential: Credential }): React.JSX.Element {
     // Brings in the validation function from the context
