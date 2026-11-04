@@ -1,18 +1,7 @@
 import { FormProvider } from "../context/FormContext";
-import * as z from "zod";
-import { passwordSchema } from "../schema/password.schema";
 import ForgotPasswordForm from "../components/auth/ForgotPasswordForm";
 import React from "react";
-
-// Schema for resetting a password — mirrors the server-side ResetPasswordSchema
-const forgotPasswordSchema = z.object({
-    email: z.email(),
-    password: passwordSchema,
-    confirmPassword: passwordSchema
-}).refine(data => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"]
-})
+import { forgotPasswordSchema } from "../schema/forgot-password.schema";
 
 export default function ForgotPassword(): React.JSX.Element {
     return (

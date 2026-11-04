@@ -1,16 +1,9 @@
 import LoginForm from "../components/auth/LoginForm";
 import { FormProvider } from "../context/FormContext";
-import * as z from "zod"
-import { passwordSchema } from "../schema/password.schema";
+import { loginSchema } from "../schema/login.schema";
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-
-// Defines the schema to be used for logging in
-const loginSchema = z.object({
-    email: z.email(),
-    password: passwordSchema
-})
 
 export default function Login():React.JSX.Element {
     const { user, loading } = useAuth();
