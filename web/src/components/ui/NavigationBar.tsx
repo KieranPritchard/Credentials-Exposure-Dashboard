@@ -43,7 +43,7 @@ export default function NavigationBar():React.JSX.Element {
                 <div className="flex items-center justify-between mb-8 px-2">
                     {!isCollapsed && (
                         <span className="text-xl font-bold tracking-wide text-blue-50">
-                            Credential Manager
+                            My Credentials
                         </span>
                     )}
                     <button

@@ -3,6 +3,9 @@ import NavigationBar from "../components/ui/NavigationBar"
 import { api } from "../lib/api"
 import { useNavigate, type NavigateFunction } from "react-router-dom"
 import MetricCard from "../components/ui/dashboard/MetricCard"
+import ExposureBreakdownChart from "../components/ui/dashboard/ExposureBreakdownChart"
+import TopBreachesChart from "../components/ui/dashboard/TopBreachesChart"
+import DomainExposureChart from "../components/ui/dashboard/DomainExposureChart"
 import type { Credential } from "../types/Credential"
 
 export default function Dashboard() {
@@ -101,12 +104,21 @@ export default function Dashboard() {
                 {!loading && (
                     <div className="w-full max-w-6xl">
                         <h1 className="text-2xl font-semibold mb-6">Dashboard</h1>
+                        
+                        {/* Summary Metrics */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
                             <MetricCard title="Total Number of Credentials" metric={totalCredentials()} />
                             <MetricCard title="Total Number of Breaches" metric={totalTimesBreached()} />
                             <MetricCard title="Average Breaches per Credential" metric={averageBreaches()} />
                             <MetricCard title="Breached Credentials" metric={breachedCredentials()} />
                             <MetricCard title="Breach Rate" metric={breachRate()} />
+                        </div>
+
+                        {/* Visual Breakdown Charts */}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+                            <ExposureBreakdownChart data={data} />
+                            <TopBreachesChart data={data} />
+                            <DomainExposureChart data={data} />
                         </div>
                     </div>
                 )}
