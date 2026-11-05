@@ -23,41 +23,45 @@ export default function Credentials() {
     // Brings in a navigation method
     const navigate: NavigateFunction = useNavigate()
 
-    // Fetches the data from the laravel backend
-    useEffect(() => {
-        let isMounted: boolean = true
+    const refreshData = async () => {
+        try {
+            const response = await api.get("/credentials")
+            if (response.status >= 200 && response.status < 300) {
+                setCredentials(response.data)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
-        const fetchData = async () => {
+    // Fetches the data from the laravel backend on initial mount
+    useEffect(() => {
+        let isMounted = true
+
+        const loadInitialData = async () => {
             try {
-                // Gets the response from the api
                 const response = await api.get("/credentials")
 
-                // Checks if the response was ok
                 if (response.status < 200 || response.status >= 300) {
                     navigate("/login")
                     return
                 }
 
-                // Checks if the page is mounted
                 if (isMounted) {
-                    // Stores the credentials data
-                    const credentialData = response.data
-
-                    // Sets the credentials data
-                    setCredentials(credentialData)
+                    setCredentials(response.data)
                     setLoading(false)
                 }
             } catch (error) {
-                // Logs the error to the console
                 console.log(error)
-                // Redirects the user to the login page
-                navigate("/login")
+                if (isMounted) {
+                    navigate("/login")
+                }
             }
         }
 
-        fetchData().then(() => {})
+        loadInitialData().then(() => {})
 
-        return (): void => {
+        return () => {
             isMounted = false
         }
     }, [navigate])
@@ -86,16 +90,22 @@ export default function Credentials() {
                             {/* Table for displaying credentials */}
                             <table className="w-full text-left text-sm text-slate-500">
                                 <thead className="bg-blue-100 text-xs uppercase tracking-wider text-slate-700">
-                                    <th scope="col" className="px-6 py-3">Email</th>
-                                    <th scope="col" className="px-6 py-3">Times Breached</th>
-                                    <th scope="col" className="px-6 py-3">Breach Details</th>
-                                    <th scope="col" className="px-6 py-3">Created At</th>
-                                    <th scope="col" className="px-6 py-3">Updated At</th>
-                                    <th scope="col" className="px-6 py-3">Actions</th>
+                                    <tr>
+                                        <th scope="col" className="px-6 py-3">Email</th>
+                                        <th scope="col" className="px-6 py-3">Times Breached</th>
+                                        <th scope="col" className="px-6 py-3">Breach Details</th>
+                                        <th scope="col" className="px-6 py-3">Created At</th>
+                                        <th scope="col" className="px-6 py-3">Updated At</th>
+                                        <th scope="col" className="px-6 py-3">Actions</th>
+                                    </tr>
                                 </thead>
                                 <tbody className="divide-y divide-blue-100 text-blue-800">
                                     {!loading && credentials.map((credential: Credential) => (
-                                        <CredentialTableRow key={credential.id} credential={credential} />
+                                        <CredentialTableRow
+                                            key={credential.id}
+                                            credential={credential}
+                                            onRefresh={refreshData}
+                                        />
                                     ))}
                                 </tbody>
                             </table>
@@ -121,9 +131,11 @@ export default function Credentials() {
                         >
                             {/* Form for adding a new credential, rendered inside the provider so useForm works */}
                             <FormProvider schema={credentialSchema} initialValues={{ email: ""}}>
-                                <AddCredentialForm onClose={() => setIsModalOpen(false)} />
+                                <AddCredentialForm
+                                    onClose={() => setIsModalOpen(false)}
+                                    onSuccess={refreshData}
+                                />
                             </FormProvider>
-
                         </Modal>
                     </div>
                 )}

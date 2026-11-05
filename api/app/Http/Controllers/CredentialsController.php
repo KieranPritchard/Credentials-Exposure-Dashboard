@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Credential;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CredentialsController extends Controller
 {
@@ -13,6 +14,10 @@ class CredentialsController extends Controller
         $user = $request->user('sanctum') ?? $request->user();
         $userId = $user?->id ?? $request->input('user_id');
 
+        if (! $userId) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
         $credentials = Credential::where('user_id', '=', $userId)->get();
 
         return response()->json($credentials);
@@ -21,15 +26,23 @@ class CredentialsController extends Controller
     // Method to add a new credential
     public function addCredentials(Request $request)
     {
+        $user = $request->user('sanctum') ?? $request->user();
+        $userId = $user?->id ?? $request->input('user_id');
+
+        if (! $userId) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
         $data = $request->validate([
-            'email' => 'required|email|unique:credentials,email',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('credentials')->where(fn ($query) => $query->where('user_id', $userId)),
+            ],
             'user_id' => 'sometimes|integer',
         ]);
 
-        $user = $request->user('sanctum') ?? $request->user();
-        if (! isset($data['user_id']) && $user) {
-            $data['user_id'] = $user->id;
-        }
+        $data['user_id'] = $userId;
 
         $credential = Credential::create($data);
 
@@ -41,16 +54,26 @@ class CredentialsController extends Controller
     // Method to edit credential
     public function updateCredentials(Request $request)
     {
+        $user = $request->user('sanctum') ?? $request->user();
+        $userId = $user?->id ?? $request->input('user_id');
+
+        if (! $userId) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
         $data = $request->validate([
             'id' => 'required|integer|exists:credentials,id',
-            'email' => 'required|email|unique:credentials,email,'.$request->id,
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('credentials')->where(fn ($query) => $query->where('user_id', $userId))->ignore($request->id),
+            ],
             'times_breached' => 'required|integer',
-            'breach_details' => 'nullable|string',
+            'breach_details' => 'nullable',
         ]);
 
-        $user = $request->user('sanctum') ?? $request->user();
         $credential = Credential::where('id', $data['id'])
-            ->where('user_id', '=', $user?->id)
+            ->where('user_id', '=', $userId)
             ->firstOrFail();
 
         $credential->update($data);
@@ -63,13 +86,19 @@ class CredentialsController extends Controller
     // Method to delete the credential
     public function deleteCredentials(Request $request)
     {
+        $user = $request->user('sanctum') ?? $request->user();
+        $userId = $user?->id ?? $request->input('user_id');
+
+        if (! $userId) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
         $data = $request->validate([
             'id' => 'required|integer|exists:credentials,id',
         ]);
 
-        $user = $request->user('sanctum') ?? $request->user();
         $credential = Credential::where('id', $data['id'])
-            ->where('user_id', '=', $user?->id)
+            ->where('user_id', '=', $userId)
             ->firstOrFail();
 
         $credential->delete();

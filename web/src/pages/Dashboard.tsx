@@ -15,12 +15,14 @@ export default function Dashboard() {
     // Brings in a navigation method
     const navigate: NavigateFunction = useNavigate()
 
+    const getTimesBreached = (cred: Credential): number => cred.timesBreached ?? cred.times_breached ?? 0
+
     // Handler function to generate the total credentials card data
     const totalCredentials = () => data.length
 
     // Handler function to generate the total times breached
     const totalTimesBreached = () => {
-        return data.reduce<number>((total, cred) => total + (cred.timesBreached ?? 0), 0)
+        return data.reduce<number>((total, cred) => total + getTimesBreached(cred), 0)
     }
 
     // Average breaches per credential (guards against divide by zero)
@@ -31,7 +33,7 @@ export default function Dashboard() {
 
     // Number of credentials that have appeared in at least one breach
     const breachedCredentials = () => {
-        return data.filter(cred => (cred.timesBreached ?? 0) > 0).length
+        return data.filter(cred => getTimesBreached(cred) > 0).length
     }
 
     // Percentage of credentials that have been breached

@@ -61,8 +61,29 @@ class AuthController extends Controller
     // Method to logout the user
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $user = $request->user();
+        if ($user && $user->currentAccessToken()) {
+            $user->currentAccessToken()->delete();
+        }
 
         return response()->noContent();
+    }
+
+    // Method to reset the password
+    public function resetPassword(Request $request)
+    {
+        $data = $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|string|min:8',
+        ]);
+
+        $user = User::where('email', $data['email'])->firstOrFail();
+        $user->forceFill([
+            'password' => Hash::make($data['password']),
+        ])->save();
+
+        return response()->json([
+            'message' => 'Password reset successfully',
+        ], 200);
     }
 }

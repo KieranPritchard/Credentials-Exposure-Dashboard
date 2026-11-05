@@ -125,6 +125,7 @@ export function FormProvider<
     );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useForm<T extends Record<string, unknown>>() {
     const context = useContext(FormContext) as FormContextType<T> | null;
     if (!context) throw new Error('useForm must be used within FormProvider');

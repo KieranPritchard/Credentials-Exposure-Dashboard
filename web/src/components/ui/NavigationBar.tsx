@@ -4,14 +4,15 @@ import {
     LogOut, MenuIcon,
 } from 'lucide-react';
 import { useNavItems } from '../../hooks/NavItems';
-import { api } from '../../lib/api';
+import { useAuth } from '../../context/AuthContext';
 
 export default function NavigationBar():React.JSX.Element {
     // Stores the state of the sidebar
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     // Brings in a navigate method
-    const navigate:NavigateFunction = useNavigate()
+    const navigate:NavigateFunction = useNavigate();
+    const { logout } = useAuth();
 
     // Handler function to toggle the sidebar
     const toggleSidebar:() => void = ():void => {
@@ -21,15 +22,12 @@ export default function NavigationBar():React.JSX.Element {
     // Handler function for the log out
     const handleLogout:() => void = async ():Promise<void> =>  {
         try {
-            // A successful call (200 OK or 304 Not Modified) passes straight through
-            await api.get("/logout", { withCredentials: true });
-
-            navigate("/login")
+            await logout();
+            navigate("/login");
         } catch (error) {
-            // Unauthenticated (401/403) or network failure lands here
             console.error("Logout failed:", error);
         }
-    }
+    };
 
     // Stores the navigation items
     const navItems = useNavItems();

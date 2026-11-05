@@ -9,49 +9,67 @@ import { FormProvider } from "../../../context/FormContext";
 import { credentialSchema } from "../../../schema/credential.schema";
 import EditCredentialForm from "../../forms/EditCredentialForm";
 
-export default function CredentialTableRow({ credential }: { credential: Credential }): React.JSX.Element {
+type CredentialTableRowProps = {
+    credential: Credential;
+    onRefresh?: () => void;
+};
+
+export default function CredentialTableRow({ credential, onRefresh }: CredentialTableRowProps): React.JSX.Element {
     // State for the two modals
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+    const timesBreached = credential.timesBreached ?? credential.times_breached ?? 0;
+    const breachDetails = credential.breachDetails ?? credential.breach_details;
+    const createdAt = credential.createdAt ?? credential.created_at ?? "";
+    const updatedAt = credential.updatedAt ?? credential.updated_at ?? "";
+
+    const displayBreachDetails = () => {
+        if (!breachDetails) return "None";
+        if (typeof breachDetails === "string") return breachDetails;
+        if (Array.isArray(breachDetails)) return breachDetails.join(", ");
+        return JSON.stringify(breachDetails);
+    };
+
     // Handler for deleting a credential
-    const handleDelete:()=>void = async ():Promise<void> => {
-        try{
+    const handleDelete: () => void = async (): Promise<void> => {
+        try {
             // Sends a delete request to axios
-            const response:AxiosResponse = await api.delete('/credentials', {
+            const response: AxiosResponse = await api.delete('/credentials', {
                 data: {
                     id: credential.id
                 },
                 withCredentials: true
-            })
+            });
 
             // Checks for the correct status code
             if (response.status !== 200) {
                 throw new Error(`Failed to delete credential. Status code: ${response.status}`);
             }
 
-            // Closes the modal
-            setIsDeleteModalOpen(false)
+            // Refreshes the list and closes the modal
+            onRefresh?.();
+            setIsDeleteModalOpen(false);
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                console.error('Delete recipe failed:', error.response?.data?.message ?? error.message);
+                console.error('Delete credential failed:', error.response?.data?.message ?? error.message);
             } else {
                 console.error('Unexpected error:', error);
             }
 
             // Closes the modal
-            setIsDeleteModalOpen(false)
+            setIsDeleteModalOpen(false);
         }
-    }
+    };
 
     return (
         <>
             <tr key={credential.id}>
                 <td className="px-6 py-4">{credential.email}</td>
-                <td className="px-6 py-4">{credential.timesBreached}</td>
-                <td className="px-6 py-4">{JSON.stringify(credential.breachDetails)}</td>
-                <td className="px-6 py-4">{credential.createdAt}</td>
-                <td className="px-6 py-4">{credential.updatedAt}</td>
+                <td className="px-6 py-4">{timesBreached}</td>
+                <td className="px-6 py-4 max-w-xs truncate" title={displayBreachDetails()}>{displayBreachDetails()}</td>
+                <td className="px-6 py-4">{createdAt ? new Date(createdAt).toLocaleDateString() : "-"}</td>
+                <td className="px-6 py-4">{updatedAt ? new Date(updatedAt).toLocaleDateString() : "-"}</td>
                 <td className="px-6 py-4">
                     <button
                         type="button"
@@ -79,8 +97,21 @@ export default function CredentialTableRow({ credential }: { credential: Credent
                 title="Edit Credential"
             >
                 {/* Form rendered inside the provider so useForm works */}
-                <FormProvider schema={credentialSchema} initialValues={{ email: credential.email, timesBreached: credential.timesBreached, breachDetails: JSON.stringify(credential.breachDetails) }}>
-                    <EditCredentialForm credential={credential} onClose={() => setIsEditModalOpen(false)} />
+                <FormProvider
+                    schema={credentialSchema}
+                    initialValues={{
+                        email: credential.email,
+                        timesBreached: timesBreached,
+                        breachDetails: typeof breachDetails === "object" && breachDetails !== null
+                            ? JSON.stringify(breachDetails)
+                            : (breachDetails ? String(breachDetails) : "")
+                    }}
+                >
+                    <EditCredentialForm
+                        credential={credential}
+                        onClose={() => setIsEditModalOpen(false)}
+                        onSuccess={onRefresh}
+                    />
                 </FormProvider>
             </Modal>
 
@@ -110,5 +141,5 @@ export default function CredentialTableRow({ credential }: { credential: Credent
                 </div>
             </Modal>
         </>
-    )
+    );
 }

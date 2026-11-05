@@ -11,9 +11,11 @@ type EditCredentialFormProps = {
     credential: Credential;
     // Closes the modal
     onClose: () => void;
+    // Callback when edit succeeds
+    onSuccess?: () => void;
 }
 
-export default function EditCredentialForm({ credential, onClose }: EditCredentialFormProps): React.JSX.Element {
+export default function EditCredentialForm({ credential, onClose, onSuccess }: EditCredentialFormProps): React.JSX.Element {
     // Brings in the validation function from the context
     // This component renders inside the FormProvider, so the context exists here
     const { validateAll } = useForm();
@@ -35,7 +37,7 @@ export default function EditCredentialForm({ credential, onClose }: EditCredenti
             const response: AxiosResponse = await api.put('/credentials', {
                 id: credential.id,
                 email: data.email,
-                times_breached: data.timesBreached,
+                times_breached: data.timesBreached ?? 0,
                 breach_details: data.breachDetails
             }, {
                 withCredentials: true
@@ -46,11 +48,12 @@ export default function EditCredentialForm({ credential, onClose }: EditCredenti
                 throw new Error(`Failed to edit credential. Status code: ${response.status}`);
             }
 
-            // Closes the modal
+            // Notifies parent and closes modal
+            onSuccess?.();
             onClose();
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                console.error('Edit recipe failed:', error.response?.data?.message ?? error.message);
+                console.error('Edit credential failed:', error.response?.data?.message ?? error.message);
             } else {
                 console.error('Unexpected error:', error);
             }

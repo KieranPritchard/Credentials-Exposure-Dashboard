@@ -20,9 +20,11 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/" element={<Protected><Dashboard /></Protected>} />
+          <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
           <Route path="/credentials" element={<Protected><Credentials /></Protected>} />
-          <Route path="/forgot-password" element={<Protected><ForgotPassword /></Protected>} />
+          <Route path="/my-credentials" element={<Protected><Credentials /></Protected>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

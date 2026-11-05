@@ -28,7 +28,10 @@ export default function FormField({ name, label, type = 'text' }: FormFieldProps
                 id={name}
                 type={type}
                 value={fieldValue}
-                onChange={(e):void => handleChange(name, e.target.value)}
+                onChange={(e):void => {
+                    const val = type === 'number' ? (e.target.value === '' ? undefined : Number(e.target.value)) : e.target.value;
+                    handleChange(name, val);
+                }}
                 onBlur={():void => handleBlur(name)}
                 className={`w-full px-3 py-2 text-sm text-slate-900 bg-white border rounded-lg outline-none transition-all duration-150 ${
                     hasError 

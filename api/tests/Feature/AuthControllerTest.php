@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -109,5 +110,25 @@ class AuthControllerTest extends TestCase
 
         // Ensure token has been deleted from the database
         $this->assertCount(0, $user->tokens);
+    }
+
+    public function test_user_can_reset_password(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'resetme@example.com',
+            'password' => bcrypt('oldpassword123'),
+        ]);
+
+        $response = $this->postJson('/reset-password', [
+            'email' => 'resetme@example.com',
+            'password' => 'newpassword123',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'message' => 'Password reset successfully',
+            ]);
+
+        $this->assertTrue(Hash::check('newpassword123', $user->fresh()->password));
     }
 }

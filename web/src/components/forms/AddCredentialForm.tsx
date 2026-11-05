@@ -7,9 +7,11 @@ import FormField from "./FormField"
 type AddCredentialFormProps = {
     // Closes the modal
     onClose: () => void
+    // Callback when credential is added successfully
+    onSuccess?: () => void
 }
 
-export default function AddCredentialForm({ onClose }: AddCredentialFormProps) {
+export default function AddCredentialForm({ onClose, onSuccess }: AddCredentialFormProps) {
     // Brings in the validation function from the context
     // This component renders inside the FormProvider, so the context exists here
     const { validateAll } = useForm();
@@ -39,7 +41,8 @@ export default function AddCredentialForm({ onClose }: AddCredentialFormProps) {
                 throw new Error(`Failed to add credential. Status code: ${response.status}`)
             }
 
-            // Closes the modal
+            // Notifies parent and closes modal
+            onSuccess?.()
             onClose()
         } catch (error) {
             if (axios.isAxiosError(error)) {

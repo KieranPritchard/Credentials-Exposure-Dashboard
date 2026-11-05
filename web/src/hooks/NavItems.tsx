@@ -12,6 +12,6 @@ interface NavItem {
 export const useNavItems:() => NavItem[] = (): NavItem[] => {
     return [
         { label: 'Home', path: '/', icon: Home },
-        { label: 'Credentials', path: '/credentials', icon: List },
+        { label: 'Credentials', path: '/my-credentials', icon: List },
     ];
 };

@@ -1,8 +1,10 @@
 import axios from 'axios'
 
 // Exports an api object
+// Requests go to /api, which the vite dev proxy forwards to laravel
+// In production, set VITE_API_URL to the full backend url if it is hosted separately
 export const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || import.meta.env.BASE_URL || "",
+    baseURL: import.meta.env.VITE_API_URL || "/api",
     headers: { Accept: "application/json" },
 })
 
