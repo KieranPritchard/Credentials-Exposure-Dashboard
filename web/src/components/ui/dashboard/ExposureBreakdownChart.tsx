@@ -110,3 +110,4 @@ export default function ExposureBreakdownChart({ data }: ExposureBreakdownChartP
         </div>
     );
 }
+

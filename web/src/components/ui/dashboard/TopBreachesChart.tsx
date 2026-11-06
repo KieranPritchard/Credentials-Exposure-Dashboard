@@ -98,3 +98,4 @@ export default function TopBreachesChart({ data }: TopBreachesChartProps) {
         </div>
     );
 }
+
