@@ -36,7 +36,7 @@ To build a full-stack cybersecurity dashboard that monitors email addresses agai
 
 ### Outcome
 
-[Kieran: confirm or change this.] The project is a working dashboard where a user can log in, add emails and see how exposed they are across known breaches, with the data kept up to date by the scheduler in the background. It gave me experience connecting a Laravel API to a React frontend, running scheduled jobs against a third party API, and containerising the whole stack.
+The project is a working dashboard where a user can log in, add emails and see how exposed they are across known breaches, with the data kept up to date by the scheduler in the background. It gave me experience connecting a Laravel API to a React frontend, running scheduled jobs against a third party API, and containerising the whole stack.
 
 ## How to Use the Project
 
